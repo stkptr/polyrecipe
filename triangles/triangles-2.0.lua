@@ -1,22 +1,12 @@
--- You cannot reliably set part.Quaternion, but setting part.Rotation is reliable
-function SetQuaternion(part, q)
-	local rotation = Quaternion.ToEuler(q)
-	part.Rotation = Vector3.New(
-		rotation.X,
-		-rotation.Y,
-		-rotation.Z
-	)
-end
-
 -- Given a wedge part t, rescale, position, and orient it so its vertices meet at, bt, ct
 -- at, bt, ct must form a right triangle
 function RegisterTriangle(t, at, bt, ct)
 	local offset = (at + bt) / 2
-	t.Size = Vector3.New(Vector3.Distance(at, ct), Vector3.Distance(bt, ct), 0)
+	t.Size = Vector3.New(Vector3.Distance(bt, ct), Vector3.Distance(at, ct), 0)
 	t.Position = offset
-	local normal = Vector3.Cross(at - ct, at - bt)
-	local planeUp = bt - ct
-	SetQuaternion(t, Quaternion.LookRotation(normal, planeUp))
+	local normal = Vector3.Cross(bt - ct, at - bt)
+	local planeUp = at - ct
+	t:LookAt(normal + offset, planeUp)
 end
 
 
